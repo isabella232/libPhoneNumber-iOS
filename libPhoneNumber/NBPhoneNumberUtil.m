@@ -554,13 +554,6 @@ static NSMutableDictionary *regexPatternCache;
 }
 
 
-- (void)dealloc
-{
-    [self clearCC2CN];
-    [self clearCN2CC];
-}
-
-
 - (void)clearCC2CN
 {
     if (self.mapCCode2CN != nil)
