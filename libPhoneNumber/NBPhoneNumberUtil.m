@@ -162,8 +162,7 @@ static NSMutableDictionary *regexPatternCache;
 {
     string = [NBPhoneNumberUtil normalizeNonBreakingSpace:string];
     
-    if (string == nil || [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length <= 0)
-    {
+    if (string == nil || [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length <= 0) {
         return NO;
     }
     
@@ -206,8 +205,7 @@ static NSMutableDictionary *regexPatternCache;
     
     int foundPosition = -1;
     
-    if (matches.count > 0)
-    {
+    if (matches.count > 0) {
         NSTextCheckingResult *match = [matches objectAtIndex:0];
         return (int)match.range.location;
     }
@@ -219,8 +217,7 @@ static NSMutableDictionary *regexPatternCache;
 - (int)indexOfStringByString:(NSString*)sourceString target:(NSString*)targetString
 {
     NSRange finded = [sourceString rangeOfString:targetString];
-    if (finded.location != NSNotFound)
-    {
+    if (finded.location != NSNotFound) {
         return (int)finded.location;
     }
     
@@ -320,10 +317,8 @@ static NSMutableDictionary *regexPatternCache;
     NSRegularExpression *currentPattern = [self regularExpressionWithPattern:pattern options:0 error:&error];
     NSArray *matches = [currentPattern matchesInString:sourceString options:0 range:NSMakeRange(0, sourceString.length)];
     
-    for (NSTextCheckingResult *match in matches)
-    {
-        if (match.range.location == 0)
-        {
+    for (NSTextCheckingResult *match in matches) {
+        if (match.range.location == 0) {
             return YES;
         }
     }
@@ -341,14 +336,10 @@ static NSMutableDictionary *regexPatternCache;
         unichar oneChar = [sourceString characterAtIndex:i];
         NSString *keyString = [NSString stringWithCharacters:&oneChar length:1];
         NSString *mappedValue = [dicMap objectForKey:keyString];
-        if (mappedValue != nil)
-        {
+        if (mappedValue != nil) {
             [targetString appendString:mappedValue];
-        }
-        else
-        {
-            if (bRemove == NO)
-            {
+        } else {
+            if (bRemove == NO) {
                 [targetString appendString:keyString];
             }
         }
@@ -370,8 +361,7 @@ static NSMutableDictionary *regexPatternCache;
 
 - (NSString*)getNationalSignificantNumber:(NBPhoneNumber*)phoneNumber
 {
-    if (phoneNumber.italianLeadingZero)
-    {
+    if (phoneNumber.italianLeadingZero) {
         return [NSString stringWithFormat:@"0%llu", phoneNumber.nationalNumber];
     }
     
@@ -381,15 +371,13 @@ static NSMutableDictionary *regexPatternCache;
 
 - (NSArray*)regionCodeFromCountryCode:(UInt32)countryCodeNumber
 {
-    if (self.mapCN2CCode == nil || [self.mapCN2CCode count] <= 0)
-    {
+    if (self.mapCN2CCode == nil || [self.mapCN2CCode count] <= 0) {
         return nil;
     }
     
     id res = [self.mapCN2CCode objectForKey:[NSString stringWithFormat:@"%u", (unsigned int)countryCodeNumber]];
     
-    if (res && [res isKindOfClass:[NSArray class]] && [((NSArray*)res) count] > 0)
-    {
+    if (res && [res isKindOfClass:[NSArray class]] && [((NSArray*)res) count] > 0) {
         return res;
     }
     
@@ -399,15 +387,13 @@ static NSMutableDictionary *regexPatternCache;
 
 - (NSString*)countryCodeFromRegionCode:(NSString*)regionCode
 {
-    if (self.mapCCode2CN == nil || [self.mapCCode2CN count] <= 0)
-    {
+    if (self.mapCCode2CN == nil || [self.mapCCode2CN count] <= 0) {
         return nil;
     }
     
     id res = [self.mapCCode2CN objectForKey:regionCode];
     
-    if (res)
-    {
+    if (res) {
         return res;
     }
     
@@ -518,30 +504,24 @@ static NSMutableDictionary *regexPatternCache;
     }
 }
 
-
-- (void)dealloc
-{
-    [self clearCC2CN];
-    [self clearCN2CC];
-}
-
-
 - (void)clearCC2CN
 {
-    if (self.mapCCode2CN != nil)
+    if (_mapCCode2CN != nil)
     {
-        [self.mapCCode2CN removeAllObjects];
-        self.mapCCode2CN = nil;
+        NSLog(@"%@", _mapCCode2CN);
+        [_mapCCode2CN removeAllObjects];
+        _mapCCode2CN = nil;
     }
 }
 
 
 - (void)clearCN2CC
 {
-    if (self.mapCN2CCode != nil)
+    if (_mapCN2CCode != nil)
     {
-        [self.mapCN2CCode removeAllObjects];
-        self.mapCN2CCode = nil;
+        NSLog(@"%@", _mapCN2CCode);
+        [_mapCN2CCode removeAllObjects];
+        _mapCN2CCode = nil;
     }
 }
 
@@ -860,8 +840,7 @@ static NSMutableDictionary *regexPatternCache;
     @catch (NSException *exception) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:exception.reason
                                                              forKey:NSLocalizedDescriptionKey];
-        if (error != NULL)
-        {
+        if (error != NULL) {
             (*error) = [NSError errorWithDomain:exception.name code:0 userInfo:userInfo];
         }
     }
@@ -874,20 +853,17 @@ static NSMutableDictionary *regexPatternCache;
     NSString *regionCode = [self getRegionCodeForNumber:phoneNumber];
     NBPhoneMetaData *metadata = [self getMetadataForRegion:regionCode];
     
-    if (metadata == nil)
-    {
+    if (metadata == nil) {
         return 0;
     }
     // If a country doesn't use a national prefix, and this number doesn't have
     // an Italian leading zero, we assume it is a closed dialling plan with no
     // area codes.
-    if (metadata.nationalPrefix == nil && phoneNumber.italianLeadingZero == NO)
-    {
+    if (metadata.nationalPrefix == nil && phoneNumber.italianLeadingZero == NO) {
         return 0;
     }
     
-    if ([self isNumberGeographical:phoneNumber] == NO)
-    {
+    if ([self isNumberGeographical:phoneNumber] == NO) {
         return 0;
     }
     
@@ -941,8 +917,7 @@ static NSMutableDictionary *regexPatternCache;
     @catch (NSException *exception) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:exception.reason
                                                              forKey:NSLocalizedDescriptionKey];
-        if (error != NULL)
-        {
+        if (error != NULL) {
             (*error) = [NSError errorWithDomain:exception.name code:0 userInfo:userInfo];
         }
     }
@@ -958,9 +933,7 @@ static NSMutableDictionary *regexPatternCache;
     {
         copiedProto = [phoneNumber copy];
         copiedProto.extension = nil;
-    }
-    else
-    {
+    } else {
         copiedProto = phoneNumber;
     }
     
@@ -974,13 +947,11 @@ static NSMutableDictionary *regexPatternCache;
     // NOTE: On IE the first group that is supposed to be the empty string does
     // not appear in the array of number groups... so make the result on non-IE
     // browsers to be that of IE.
-    if ([numberGroups count] > 0 && ((NSString*)[numberGroups objectAtIndex:0]).length <= 0)
-    {
+    if ([numberGroups count] > 0 && ((NSString*)[numberGroups objectAtIndex:0]).length <= 0) {
         [numberGroups removeObjectAtIndex:0];
     }
     
-    if ([numberGroups count] <= 2)
-    {
+    if ([numberGroups count] <= 2) {
         return 0;
     }
     
@@ -1256,8 +1227,7 @@ static NSMutableDictionary *regexPatternCache;
     UInt32 countryCallingCode = number.countryCode;
     NSString *nationalSignificantNumber = [self getNationalSignificantNumber:number];
     
-    if ([self hasValidCountryCallingCode:countryCallingCode] == NO)
-    {
+    if ([self hasValidCountryCallingCode:countryCallingCode] == NO) {
         return nationalSignificantNumber;
     }
     
@@ -1267,8 +1237,7 @@ static NSMutableDictionary *regexPatternCache;
     // contained in the metadata for US.
     NSArray *regionCodes = [self regionCodeFromCountryCode:countryCallingCode];
     NSString *regionCode = nil;
-    if (regionCodes != nil && regionCodes.count > 0)
-    {
+    if (regionCodes != nil && regionCodes.count > 0) {
         regionCode = [regionCodes objectAtIndex:0];
     }
     
@@ -1282,9 +1251,7 @@ static NSMutableDictionary *regexPatternCache;
     {
         // If no pattern above is matched, we format the number as a whole.
         formattedNumber = nationalSignificantNumber;
-    }
-    else
-    {
+    } else {
         // Before we do a replacement of the national prefix pattern $NP with the
         // national prefix, we need to copy the rule so that subsequent replacements
         // for different numbers have the appropriate national prefix.
@@ -1300,9 +1267,7 @@ static NSMutableDictionary *regexPatternCache;
                 nationalPrefixFormattingRule = [self replaceStringByRegex:nationalPrefixFormattingRule regex:NP_PATTERN withTemplate:nationalPrefix];
                 nationalPrefixFormattingRule = [self replaceStringByRegex:nationalPrefixFormattingRule regex:FG_PATTERN withTemplate:@"\\$1"];
                 numFormatCopy.nationalPrefixFormattingRule = nationalPrefixFormattingRule;
-            }
-            else
-            {
+            } else {
                 // We don't want to have a rule for how to format the national prefix if
                 // there isn't one.
                 numFormatCopy.nationalPrefixFormattingRule = @"";

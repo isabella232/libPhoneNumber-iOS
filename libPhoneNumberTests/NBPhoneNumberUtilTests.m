@@ -45,6 +45,10 @@
     [super setUp];
     
     // ...
+    
+    [self initWithoutSharedInstance];
+    [self initWithoutSharedInstance];
+    [self initWithoutSharedInstance];
 }
 
 - (void)tearDown
@@ -52,6 +56,13 @@
     // ...
     
     [super tearDown];
+}
+
+- (void)initWithoutSharedInstance
+{
+    NBPhoneNumberUtil *aUtil = [[NBPhoneNumberUtil alloc] init];
+    NBPhoneNumber *aNumber = [aUtil parse:@"2351236236136" defaultRegion:@"KR" error:nil];
+    [aUtil format:aNumber numberFormat:NBEPhoneNumberFormatINTERNATIONAL];
 }
 
 - (NSString*)stringForNumberType:(NBEPhoneNumberType)type
