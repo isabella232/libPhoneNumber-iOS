@@ -42,12 +42,6 @@
     
     if (self) {
         /**
-         * @type {i18n.phonenumbers.PhoneNumberUtil}
-         * @private
-         */
-        self.phoneUtil_ = [NBPhoneNumberUtil sharedInstance];
-        
-        /**
          * The digits that have not been entered yet will be represented by a \u2008,
          * the punctuation space.
          * @const
@@ -266,13 +260,23 @@
 
 - (id)initWithRegionCode:(NSString*)regionCode
 {
+	return [self initWithRegionCode:regionCode bundle:[NSBundle mainBundle]];
+}
+
+- (id)initWithRegionCodeForTest:(NSString*)regionCode
+{
+	return [self initWithRegionCodeForTest:regionCode bundle:[NSBundle mainBundle]];
+}
+
+- (id)initWithRegionCode:(NSString*)regionCode bundle:(NSBundle *)bundle
+{
     self = [self init];
-    
-    if (self) {
+	if (self) {
         /**
-         * @type {string}
-         * @private
-         */
+		* @private
+		* @type {i18n.phonenumbers.PhoneNumberUtil}
+		*/
+        self.phoneUtil_ = [NBPhoneNumberUtil sharedInstanceWithBundle:bundle];
         self.defaultCountry_ = regionCode;
         self.currentMetaData_ = [self getMetadataForRegion_:self.defaultCountry_];
         /**
@@ -291,14 +295,15 @@
     }
     
     return self;
+
 }
 
-- (id)initWithRegionCodeForTest:(NSString*)regionCode
+- (id)initWithRegionCodeForTest:(NSString*)regionCode bundle:(NSBundle *)bundle
 {
-    self = [self init];
+	self = [self init];
     
     if (self) {
-        self.phoneUtil_ = [NBPhoneNumberUtil sharedInstanceForTest];
+        self.phoneUtil_ = [NBPhoneNumberUtil sharedInstanceForTestWithBundle:bundle];
         
         self.defaultCountry_ = regionCode;
         self.currentMetaData_ = [self getMetadataForRegion_:self.defaultCountry_];

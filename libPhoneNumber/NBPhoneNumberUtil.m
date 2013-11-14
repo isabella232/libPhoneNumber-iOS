@@ -106,16 +106,31 @@ static NSMutableDictionary *regexPatternCache;
 {
     static NBPhoneNumberUtil *sharedOnceInstance = nil;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{ sharedOnceInstance = [[self alloc] init]; });
+    dispatch_once(&onceToken, ^{ sharedOnceInstance = [[self alloc] initWithBundle:[NSBundle mainBundle] metaData:@"NBPhoneNumberMetadata"]; });
     return sharedOnceInstance;
 }
 
++ (NBPhoneNumberUtil*)sharedInstanceWithBundle:(NSBundle *)bundle
+{
+    static NBPhoneNumberUtil *sharedOnceInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{ sharedOnceInstance = [[self alloc] initWithBundle:bundle metaData:@"NBPhoneNumberMetadata"]; });
+    return sharedOnceInstance;
+}
 
 + (NBPhoneNumberUtil*)sharedInstanceForTest
 {
     static NBPhoneNumberUtil *sharedOnceInstanceForTest = nil;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{ sharedOnceInstanceForTest = [[self alloc] initForTest]; });
+    dispatch_once(&onceToken, ^{ sharedOnceInstanceForTest = [[self alloc] initWithBundle:[NSBundle mainBundle] metaData:@"NBPhoneNumberMetadataForTesting"]; });
+    return sharedOnceInstanceForTest;
+}
+
++ (NBPhoneNumberUtil*)sharedInstanceForTestWithBundle:(NSBundle *)bundle
+{
+    static NBPhoneNumberUtil *sharedOnceInstanceForTest = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{ sharedOnceInstanceForTest = [[self alloc] initWithBundle:bundle metaData:@"NBPhoneNumberMetadataForTesting"]; });
     return sharedOnceInstanceForTest;
 }
 
@@ -409,15 +424,28 @@ static NSMutableDictionary *regexPatternCache;
     {
         [self initRegularExpressionSet];
         [self initNormalizationMappings];
-        
-        NSDictionary *resData = [self loadMetadata:@"NBPhoneNumberMetadata"];
-        _coreMetaData = [resData objectForKey:@"countryToMetadata"];
-        _mapCN2CCode = [resData objectForKey:@"countryCodeToRegionCodeMap"];
-        
-        [self initCC2CN];
     }
     
     return self;
+}
+
+- (id) initWithBundle:(NSBundle *)bundle metaData:(NSString *) metaData
+{
+	self = [self init];
+	if (self)
+	{
+		[self setupResources:bundle metaData:metaData];
+	}
+	return self;
+}
+
+- (void) setupResources:(NSBundle *)bundleForResources metaData:(NSString *) metaData
+{
+	_libPhoneBundle	= bundleForResources;
+	NSDictionary *resData = [self loadMetadata:metaData];
+	_coreMetaData = [resData objectForKey:@"countryToMetadata"];
+	_mapCN2CCode = [resData objectForKey:@"countryCodeToRegionCodeMap"];
+	[self initCC2CN];
 }
 
 
@@ -445,7 +473,7 @@ static NSMutableDictionary *regexPatternCache;
     NSDictionary *unarchiveData = nil;
     
     @try {
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:name ofType:@"plist"];
+		NSString *filePath = [self.libPhoneBundle pathForResource:name ofType:@"plist"];
         NSData *fileData = [NSData dataWithContentsOfFile:filePath];
         unarchiveData = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
     }
