@@ -1151,7 +1151,7 @@ static NSMutableDictionary *regexPatternCache;
  *     phone number should be formatted into.
  * @return {string} the formatted phone number.
  */
-- (NSString*)format:(NBPhoneNumber*)phoneNumber numberFormat:(NBEPhoneNumberFormat)numberFormat error:(NSError**)error;
+- (NSString*)format:(NBPhoneNumber*)phoneNumber numberFormat:(NBEPhoneNumberFormat)numberFormat error:(NSError**)error
 {
     NSString *res = nil;
     @try {
@@ -2684,7 +2684,7 @@ static NSMutableDictionary *regexPatternCache;
         if (error != NULL)
             (*error) = [NSError errorWithDomain:@"INVALID_REGION_CODE" code:0 userInfo:userInfo];
         
-        return nil;
+        return -1;
     }
     
     return metadata.countryCode;
