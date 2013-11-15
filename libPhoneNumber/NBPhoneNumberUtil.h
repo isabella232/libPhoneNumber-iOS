@@ -20,6 +20,8 @@ extern NSString * const REGION_CODE_FOR_NON_GEO_ENTITY;
 
 + (NBPhoneNumberUtil*)sharedInstance;
 + (NBPhoneNumberUtil*)sharedInstanceForTest;
++ (NBPhoneNumberUtil*)sharedInstanceWithBundle:(NSBundle *)bundle;
++ (NBPhoneNumberUtil*)sharedInstanceForTestWithBundle:(NSBundle *)bundle;
 
 // regular expressions
 - (NSArray*)matchesByRegex:(NSString*)sourceString regex:(NSString*)pattern;
@@ -108,5 +110,6 @@ extern NSString * const REGION_CODE_FOR_NON_GEO_ENTITY;
 - (BOOL)formattingRuleHasFirstGroupOnly:(NSString*)nationalPrefixFormattingRule;
 
 @property (nonatomic, strong, readonly) NSDictionary *DIGIT_MAPPINGS;
+@property (nonatomic, strong, readonly) NSBundle *libPhoneBundle;
 
 @end
