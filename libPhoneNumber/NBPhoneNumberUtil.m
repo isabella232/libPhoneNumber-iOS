@@ -532,6 +532,7 @@ static NSMutableDictionary *regexPatternCache;
     }
 }
 
+
 - (void)clearCC2CN
 {
     if (_mapCCode2CN != nil)

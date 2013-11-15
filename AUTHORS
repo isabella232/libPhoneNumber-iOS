@@ -1,6 +1,6 @@
 Authors ordered by first contribution.
 
-SungMin Ha (ishtar, zen.isis@gmail.com)
+SungMin Ha (ishtar aka iziz, zen.isis@gmail.com)
 Hyuk Hur (http://hyukhur.tumblr.com)
 
 Cliff Rowley (cliffrowley@gmail.com)
@@ -30,3 +30,6 @@ Frane Bandov frane (frane@offbyte.com, http://frane.offbyte.com)
 
 Cliff Ingham (inghamn@bloomington.in.gov, http://bloomington.in.gov/)
   - Added explicit type casts to avoid warnings when building for 64 bit iOS...
+
+rhoiberg
+  - Allow NBPhoneNumberUtil to be created using a specified bundle.
