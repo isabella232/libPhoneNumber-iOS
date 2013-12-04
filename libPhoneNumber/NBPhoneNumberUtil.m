@@ -363,18 +363,30 @@ static NSMutableDictionary *regexPatternCache;
     return targetString;
 }
 
-
-- (BOOL)isNaN:(NSString*)sourceString
+- (BOOL)isAllDigits:(NSString*)sourceString
 {
-    NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
-    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:sourceString];
-    BOOL hasNumberOnly = [alphaNums isSupersetOfSet:inStringSet];
-    
-    return !hasNumberOnly;
+    NSCharacterSet *nonNumbers = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+    NSRange r = [sourceString rangeOfCharacterFromSet:nonNumbers];
+    return r.location == NSNotFound;
+}
+
+- (BOOL)isNumeric:(NSString *)sourceString
+{
+    NSScanner *sc = [NSScanner scannerWithString:sourceString];
+    if ([sc scanFloat:NULL]) {
+        return [sc isAtEnd];
+    }
+    return NO;
+}
+
+- (BOOL)isNaN:(NSString *)sourceString
+{
+    if ([self isNumeric:sourceString]) return NO;
+    return YES;
 }
 
 
-- (NSString*)getNationalSignificantNumber:(NBPhoneNumber*)phoneNumber
+- (NSString *)getNationalSignificantNumber:(NBPhoneNumber *)phoneNumber
 {
     if (phoneNumber.italianLeadingZero) {
         return [NSString stringWithFormat:@"0%llu", phoneNumber.nationalNumber];
@@ -384,7 +396,7 @@ static NSMutableDictionary *regexPatternCache;
 }
 
 
-- (NSArray*)regionCodeFromCountryCode:(UInt32)countryCodeNumber
+- (NSArray *)regionCodeFromCountryCode:(UInt32)countryCodeNumber
 {
     if (self.mapCN2CCode == nil || [self.mapCN2CCode count] <= 0) {
         return nil;
