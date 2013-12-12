@@ -76,11 +76,12 @@ NSString * const VALID_DIGITS_STRING = @"0-9０-９٠-٩۰-۹";
 NSString * const PLUS_CHARS = @"+＋";
 NSString * const REGION_CODE_FOR_NON_GEO_ENTITY = @"001";
 static NSDictionary *DIGIT_MAPPINGS;
-static NSMutableDictionary *regexPatternCache;
 
 
 #pragma mark - NBPhoneNumberUtil interface -
-@interface NBPhoneNumberUtil ()
+@interface NBPhoneNumberUtil () {
+    NSMutableDictionary *regexPatternCache;
+}
 
 /*
  Terminologies
