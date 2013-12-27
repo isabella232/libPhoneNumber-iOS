@@ -577,7 +577,7 @@
     NSString *accruedInputWithoutFormatting = [self.accruedInput_ copy];
     [self clear];
     
-    NSString *result = nil;
+    NSString *result = @"";
     for (int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
         NSString *ch = [accruedInputWithoutFormatting substringWithRange:NSMakeRange(i, 1)];
         result = [self inputDigitAndRememberPosition:ch];
@@ -591,7 +591,7 @@
     NSString *accruedInputWithoutFormatting = [self.accruedInput_ copy];
     [self clear];
     
-    NSString *result = nil;
+    NSString *result = @"";
     for (int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
         NSString *ch = [accruedInputWithoutFormatting substringWithRange:NSMakeRange(i, 1)];
         result = [self inputDigit:ch];
