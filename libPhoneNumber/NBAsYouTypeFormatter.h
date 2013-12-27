@@ -17,6 +17,10 @@
 
 - (NSString*)inputDigit:(NSString*)nextChar;
 - (NSString*)inputDigitAndRememberPosition:(NSString*)nextChar;
+
+- (NSString*)removeLastDigit;
+- (NSString*)removeLastDigitAndRememberPosition;
+
 - (int)getRememberedPosition;
 - (void)clear;
 

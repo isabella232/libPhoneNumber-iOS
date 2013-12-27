@@ -68,6 +68,18 @@
         // otherwise, no formatting is applied.
         STAssertEqualObjects(@"+48881231+", [f inputDigit:@"+"], nil);
         STAssertEqualObjects(@"+48881231+2", [f inputDigit:@"2"], nil);
+        
+        STAssertEqualObjects(@"+48881231+", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 88 123 1", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 88 123", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 88 12", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 88 1", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 88", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 8", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+48 ", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+4", [f removeLastDigit], nil);
+        STAssertEqualObjects(@"+", [f removeLastDigit], nil);
+        STAssertEqualObjects(nil, [f removeLastDigit], nil);
     }
     
     //testTooLongNumberMatchingMultipleLeadingDigits()

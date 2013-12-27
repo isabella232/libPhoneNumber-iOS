@@ -572,6 +572,33 @@
     }
 }
 
+- (NSString*)removeLastDigitAndRememberPosition
+{
+    NSString *accruedInputWithoutFormatting = [self.accruedInput_ copy];
+    [self clear];
+    
+    NSString *result = nil;
+    for (int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
+        NSString *ch = [accruedInputWithoutFormatting substringWithRange:NSMakeRange(i, 1)];
+        result = [self inputDigitAndRememberPosition:ch];
+    }
+    
+    return result;
+}
+
+- (NSString*)removeLastDigit
+{
+    NSString *accruedInputWithoutFormatting = [self.accruedInput_ copy];
+    [self clear];
+    
+    NSString *result = nil;
+    for (int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
+        NSString *ch = [accruedInputWithoutFormatting substringWithRange:NSMakeRange(i, 1)];
+        result = [self inputDigit:ch];
+    }
+    
+    return result;
+}
 
 /**
  * Formats a phone number on-the-fly as each digit is entered.
