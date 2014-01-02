@@ -79,7 +79,7 @@
         STAssertEqualObjects(@"+48 ", [f removeLastDigit], nil);
         STAssertEqualObjects(@"+4", [f removeLastDigit], nil);
         STAssertEqualObjects(@"+", [f removeLastDigit], nil);
-        STAssertEqualObjects(nil, [f removeLastDigit], nil);
+        STAssertEqualObjects(@"", [f removeLastDigit], nil);
     }
     
     //testTooLongNumberMatchingMultipleLeadingDigits()

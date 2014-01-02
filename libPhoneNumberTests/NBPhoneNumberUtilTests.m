@@ -149,6 +149,20 @@
     }
 }
 
+- (void)testForGetMetadataForRegionTwice
+{
+    NBPhoneNumberUtil *phoneUtil = [NBPhoneNumberUtil sharedInstance];
+    
+    [phoneUtil getMetadataForRegion:@"US"];
+    [phoneUtil getMetadataForRegion:@"KR"];
+    [phoneUtil getMetadataForRegion:nil];
+    [phoneUtil getMetadataForRegion:NULL];
+    [phoneUtil getMetadataForRegion:@""];
+    [phoneUtil getMetadataForRegion:0];
+    [phoneUtil getMetadataForRegion:@" AU"];
+    [phoneUtil getMetadataForRegion:@" JP        "];
+}
+
 - (void)testNSDictionaryalbeKey
 {
     NBPhoneNumberUtil *phoneUtil = [NBPhoneNumberUtil sharedInstance];
