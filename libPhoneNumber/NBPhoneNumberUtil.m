@@ -92,7 +92,7 @@ static NSDictionary *DIGIT_MAPPINGS;
 @property (nonatomic, strong, readonly) NSDictionary *coreMetaData;
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *mapCCode2CN;
-@property (nonatomic, strong, readwrite) NSMutableDictionary *mapCN2CCode;
+@property (nonatomic, strong, readwrite) NSDictionary *mapCN2CCode;
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *i18nNumberFormat;
 @property (nonatomic, strong, readwrite) NSMutableDictionary *i18nPhoneNumberDesc;
@@ -559,12 +559,7 @@ static NSDictionary *DIGIT_MAPPINGS;
 
 - (void)clearCN2CC
 {
-    if (_mapCN2CCode != nil)
-    {
-        NSLog(@"%@", _mapCN2CCode);
-        [_mapCN2CCode removeAllObjects];
-        _mapCN2CCode = nil;
-    }
+    _mapCN2CCode = nil;
 }
 
 - (NSDictionary *)DIGIT_MAPPINGS
