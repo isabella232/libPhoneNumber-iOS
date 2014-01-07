@@ -550,7 +550,7 @@ static NSDictionary *DIGIT_MAPPINGS;
 {
     if (_mapCCode2CN != nil)
     {
-        NSLog(@"%@", _mapCCode2CN);
+        // NSLog(@"%@", _mapCCode2CN);
         [_mapCCode2CN removeAllObjects];
         _mapCCode2CN = nil;
     }
