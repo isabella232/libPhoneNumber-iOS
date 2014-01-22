@@ -1176,4 +1176,14 @@
     }
 };
 
+
+/**
+ * Returns the formatted number.
+ *
+ * @return {string}
+ */
+- (NSString *)description {
+    return self.currentOutput_;
+}
+
 @end
