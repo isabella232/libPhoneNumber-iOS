@@ -1176,6 +1176,58 @@
         STAssertEqualObjects(@"12", [f inputDigit:@"2"], nil);
         STAssertEqualObjects(@"1 22", [f inputDigit:@"2"], nil);
     }
+    
+    // testAYTFDescription()
+    {
+        /** @type {i18n.phonenumbers.AsYouTypeFormatter} */
+        NBAsYouTypeFormatter *f = [[NBAsYouTypeFormatter alloc] initWithRegionCodeForTest:@"US"];
+        
+        [f inputDigit:@"1"];
+        [f inputDigit:@"6"];
+        [f inputDigit:@"5"];
+        [f inputDigit:@"0"];
+        [f inputDigit:@"2"];
+        [f inputDigit:@"5"];
+        [f inputDigit:@"3"];
+        [f inputDigit:@"2"];
+        [f inputDigit:@"2"];
+        [f inputDigit:@"2"];
+        [f inputDigit:@"2"];
+        STAssertEqualObjects(@"1 650 253 2222", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650 253 222", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650 253 22", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650 253 2", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650 253", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650 25", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650 2", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 650", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1 65", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"16", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"1", [f description], nil);
+        
+        [f removeLastDigit];
+        STAssertEqualObjects(@"", [f description], nil);
+    }
 }
 
 @end
