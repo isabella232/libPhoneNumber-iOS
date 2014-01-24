@@ -81,6 +81,7 @@ static NSDictionary *DIGIT_MAPPINGS;
 #pragma mark - NBPhoneNumberUtil interface -
 @interface NBPhoneNumberUtil () {
     NSMutableDictionary *regexPatternCache;
+    NSLock *lockPatternCache;
 }
 
 /*
@@ -173,6 +174,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     return error;
 }
 
+
 #pragma mark - Regular expression Utilities -
 - (BOOL)hasValue:(NSString*)string
 {
@@ -185,20 +187,28 @@ static NSDictionary *DIGIT_MAPPINGS;
     return YES;
 }
 
+
 - (NSRegularExpression *)regularExpressionWithPattern:(NSString *)pattern options:(NSRegularExpressionOptions)options error:(NSError **)error
 {
-	if (!regexPatternCache) {
-        regexPatternCache = [[NSMutableDictionary alloc] init];
-    }
+    [lockPatternCache lock];
     
-    NSRegularExpression *regex = [regexPatternCache objectForKey:pattern];
-    if (!regex) {
-        regex = [NSRegularExpression regularExpressionWithPattern:pattern options:options error:error];
-        [regexPatternCache setObject:regex forKey:pattern];
+    @try {
+        if (!regexPatternCache) {
+            regexPatternCache = [[NSMutableDictionary alloc] init];
+        }
+        
+        NSRegularExpression *regex = [regexPatternCache objectForKey:pattern];
+        if (!regex) {
+            regex = [NSRegularExpression regularExpressionWithPattern:pattern options:options error:error];
+            [regexPatternCache setObject:regex forKey:pattern];
+        }
+        return regex;
     }
-    
-    return regex;
+    @finally {
+        [lockPatternCache unlock];
+    }
 }
+
 
 - (NSMutableArray*)componentsSeparatedByRegex:(NSString*)sourceString regex:(NSString*)pattern
 {
@@ -249,8 +259,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     NSRegularExpression *currentPattern = [self regularExpressionWithPattern:pattern options:0 error:&error];
     NSRange replaceRange = [currentPattern rangeOfFirstMatchInString:sourceString options:0 range:NSMakeRange(0, sourceString.length)];
     
-    if (replaceRange.location != NSNotFound)
-    {
+    if (replaceRange.location != NSNotFound) {
         replacementResult = [currentPattern stringByReplacingMatchesInString:[sourceString mutableCopy] options:0
                                                                        range:replaceRange
                                                                 withTemplate:templateString];
@@ -268,12 +277,10 @@ static NSDictionary *DIGIT_MAPPINGS;
     NSRegularExpression *currentPattern = [self regularExpressionWithPattern:pattern options:0 error:&error];
     NSArray *matches = [currentPattern matchesInString:sourceString options:0 range:NSMakeRange(0, sourceString.length)];
     
-    if ([matches count] == 1)
-    {
+    if ([matches count] == 1) {
         NSRange replaceRange = [currentPattern rangeOfFirstMatchInString:sourceString options:0 range:NSMakeRange(0, sourceString.length)];
         
-        if (replaceRange.location != NSNotFound)
-        {
+        if (replaceRange.location != NSNotFound) {
             replacementResult = [currentPattern stringByReplacingMatchesInString:[sourceString mutableCopy] options:0
                                                                            range:replaceRange
                                                                     withTemplate:templateString];
@@ -281,8 +288,7 @@ static NSDictionary *DIGIT_MAPPINGS;
         return replacementResult;
     }
     
-    if ([matches count] > 1)
-    {
+    if ([matches count] > 1) {
         replacementResult = [currentPattern stringByReplacingMatchesInString:[replacementResult mutableCopy] options:0
                                                                        range:NSMakeRange(0, sourceString.length) withTemplate:templateString];
         return replacementResult;
@@ -317,8 +323,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     NSArray *matches = [self matchesByRegex:sourceString regex:pattern];
     NSMutableArray *matchString = [[NSMutableArray alloc] init];
     
-    for (NSTextCheckingResult *match in matches)
-    {
+    for (NSTextCheckingResult *match in matches) {
         NSString *curString = [sourceString substringWithRange:match.range];
         [matchString addObject:curString];
     }
@@ -364,12 +369,14 @@ static NSDictionary *DIGIT_MAPPINGS;
     return targetString;
 }
 
+
 - (BOOL)isAllDigits:(NSString*)sourceString
 {
     NSCharacterSet *nonNumbers = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
     NSRange r = [sourceString rangeOfCharacterFromSet:nonNumbers];
     return r.location == NSNotFound;
 }
+
 
 - (BOOL)isNumeric:(NSString *)sourceString
 {
@@ -379,6 +386,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     }
     return NO;
 }
+
 
 - (BOOL)isNaN:(NSString *)sourceString
 {
@@ -430,11 +438,13 @@ static NSDictionary *DIGIT_MAPPINGS;
 
 
 #pragma mark - Initializations -
+
 - (id)init
 {
     self = [super init];
     if (self)
     {
+        lockPatternCache = [[NSLock alloc] init];
         [self initRegularExpressionSet];
         [self initNormalizationMappings];
     }
@@ -442,17 +452,16 @@ static NSDictionary *DIGIT_MAPPINGS;
     return self;
 }
 
-- (id) initWithBundle:(NSBundle *)bundle metaData:(NSString *) metaData
+- (id)initWithBundle:(NSBundle *)bundle metaData:(NSString *)metaData
 {
 	self = [self init];
-	if (self)
-	{
+	if (self) {
 		[self setupResources:bundle metaData:metaData];
 	}
 	return self;
 }
 
-- (void) setupResources:(NSBundle *)bundleForResources metaData:(NSString *) metaData
+- (void)setupResources:(NSBundle *)bundleForResources metaData:(NSString *)metaData
 {
 	_libPhoneBundle	= bundleForResources;
 	NSDictionary *resData = [self loadMetadata:metaData];
