@@ -3006,7 +3006,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     NBPhoneNumber *numberCopy = [number copy];
     UInt64 nationalNumber = number.nationalNumber;
     do {
-        nationalNumber = floor(nationalNumber / 10);
+        nationalNumber = (UInt64)floor(nationalNumber / 10);
         numberCopy.nationalNumber = nationalNumber;
         if (nationalNumber == 0 || [self isPossibleNumberWithReason:numberCopy] == NBEValidationResultTOO_SHORT)
         {
