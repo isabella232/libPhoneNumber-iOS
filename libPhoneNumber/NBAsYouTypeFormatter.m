@@ -26,8 +26,8 @@
 @property (nonatomic, strong, readwrite) NSRegularExpression *ELIGIBLE_FORMAT_PATTERN_;
 @property (nonatomic, assign, readwrite) BOOL ableToFormat_, inputHasFormatting_, isCompleteNumber_, isExpectingCountryCallingCode_, shouldAddSpaceAfterNationalPrefix_;
 @property (nonatomic, strong, readwrite) NBPhoneNumberUtil *phoneUtil_;
-@property (nonatomic, assign, readwrite) int lastMatchPosition_, originalPosition_, positionToRemember_;
-@property (nonatomic, assign, readwrite) int MIN_LEADING_DIGITS_LENGTH_;
+@property (nonatomic, assign, readwrite) unsigned int lastMatchPosition_, originalPosition_, positionToRemember_;
+@property (nonatomic, assign, readwrite) unsigned int MIN_LEADING_DIGITS_LENGTH_;
 @property (nonatomic, strong, readwrite) NSMutableArray *possibleFormats_;
 @property (nonatomic, strong, readwrite) NBPhoneMetaData *currentMetaData_, *defaultMetaData_, *EMPTY_METADATA_;
 
@@ -353,7 +353,7 @@
     // format where a formatting template could be created.
     /** @type {number} */
     unsigned int possibleFormatsLength = (unsigned int)[self.possibleFormats_ count];
-    for (int i = 0; i < possibleFormatsLength; ++i)
+    for (unsigned int i = 0; i < possibleFormatsLength; ++i)
     {
         /** @type {i18n.phonenumbers.NumberFormat} */
         NBNumberFormat *numberFormat = [self.possibleFormats_ safeObjectAtIndex:i];
@@ -401,7 +401,7 @@
     /** @type {number} */
     unsigned int formatListLength = (unsigned int)formatList.count;
     
-    for (int i = 0; i < formatListLength; ++i)
+    for (unsigned int i = 0; i < formatListLength; ++i)
     {
         /** @type {i18n.phonenumbers.NumberFormat} */
         NBNumberFormat *format = [formatList safeObjectAtIndex:i];
@@ -446,7 +446,7 @@
     unsigned int indexOfLeadingDigitsPattern = (unsigned int)leadingDigits.length - self.MIN_LEADING_DIGITS_LENGTH_;
     /** @type {number} */
     unsigned int possibleFormatsLength = (unsigned int)self.possibleFormats_.count;
-    for (int i = 0; i < possibleFormatsLength; ++i)
+    for (unsigned int i = 0; i < possibleFormatsLength; ++i)
     {
         /** @type {i18n.phonenumbers.NumberFormat} */
         NBNumberFormat *format = [self.possibleFormats_ safeObjectAtIndex:i];
@@ -578,7 +578,7 @@
     [self clear];
     
     NSString *result = @"";
-    for (int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
+    for (unsigned int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
         NSString *ch = [accruedInputWithoutFormatting substringWithRange:NSMakeRange(i, 1)];
         result = [self inputDigitAndRememberPosition:ch];
     }
@@ -592,7 +592,7 @@
     [self clear];
     
     NSString *result = @"";
-    for (int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
+    for (unsigned int i=0; i<accruedInputWithoutFormatting.length - 1; i++) {
         NSString *ch = [accruedInputWithoutFormatting substringWithRange:NSMakeRange(i, 1)];
         result = [self inputDigit:ch];
     }
@@ -813,7 +813,7 @@
     
     /** @type {number} */
     unsigned int possibleFormatsLength = (unsigned int)self.possibleFormats_.count;
-    for (int i = 0; i < possibleFormatsLength; ++i)
+    for (unsigned int i = 0; i < possibleFormatsLength; ++i)
     {
         /** @type {i18n.phonenumbers.NumberFormat} */
         NBNumberFormat *numberFormat = self.possibleFormats_[i];
@@ -884,9 +884,9 @@
         return self.originalPosition_;
     }
     /** @type {number} */
-    int accruedInputIndex = 0;
+    unsigned int accruedInputIndex = 0;
     /** @type {number} */
-    int currentOutputIndex = 0;
+    unsigned int currentOutputIndex = 0;
     /** @type {string} */
     NSString *accruedInputWithoutFormatting = self.accruedInputWithoutFormatting_;
     /** @type {string} */
@@ -942,7 +942,7 @@
     if (lengthOfNationalNumber > 0) {
         /** @type {string} */
         NSString *tempNationalNumber = @"";
-        for (int i = 0; i < lengthOfNationalNumber; i++)
+        for (unsigned int i = 0; i < lengthOfNationalNumber; i++)
         {
             tempNationalNumber = [self inputDigitHelper_:[NSString stringWithFormat: @"%C", [nationalNumber characterAtIndex:i]]];
         }
