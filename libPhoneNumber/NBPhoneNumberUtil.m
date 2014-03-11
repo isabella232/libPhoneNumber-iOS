@@ -352,7 +352,7 @@ static NSDictionary *DIGIT_MAPPINGS;
 {
     NSMutableString *targetString = [[NSMutableString alloc] initWithString:@""];
     
-    for(int i=0; i<sourceString.length; i++)
+    for(unsigned int i=0; i<sourceString.length; i++)
     {
         unichar oneChar = [sourceString characterAtIndex:i];
         NSString *keyString = [NSString stringWithCharacters:&oneChar length:1];
@@ -1052,7 +1052,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     NSString *newDigit = @"";
     unsigned int numberLength = (unsigned int)sourceString.length;
     
-    for (int i = 0; i<numberLength; ++i)
+    for (unsigned int i = 0; i<numberLength; ++i)
     {
         character = [sourceString characterAtIndex:i];
         newDigit = [normalizationReplacements objectForKey:[[NSString stringWithFormat: @"%C", character] uppercaseString]];
@@ -2601,7 +2601,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     NSString *nationalNumber = [self getNationalSignificantNumber:phoneNumber];
     unsigned int regionCodesCount = (unsigned int)[regionCodes count];
     
-    for (int i = 0; i<regionCodesCount; i++)
+    for (unsigned int i = 0; i<regionCodesCount; i++)
     {
         NSString *regionCode = [regionCodes objectAtIndex:i];
         NBPhoneMetaData *metadata = [self getMetadataForRegion:regionCode];
@@ -3051,7 +3051,7 @@ static NSDictionary *DIGIT_MAPPINGS;
     
     unsigned int numberLength = (unsigned int)fullNumber.length;
     
-    for (int i = 1; i <= MAX_LENGTH_COUNTRY_CODE_ && i <= numberLength; ++i)
+    for (unsigned int i = 1; i <= MAX_LENGTH_COUNTRY_CODE_ && i <= numberLength; ++i)
     {
         NSString *subNumber = [fullNumber substringWithRange:NSMakeRange(0, i)];
         UInt32 potentialCountryCode = (UInt32)[[NSNumber numberWithInteger:[subNumber integerValue]] unsignedLongValue];
@@ -3413,7 +3413,7 @@ static NSDictionary *DIGIT_MAPPINGS;
         // The numbers are captured into groups in the regular expression.
         NSTextCheckingResult *firstMatch = [self matcheFirstByRegex:numberStr regex:EXTN_PATTERN];
         unsigned int matchedGroupsLength = (unsigned int)[firstMatch numberOfRanges];
-        for (int i=1; i<matchedGroupsLength; i++)
+        for (unsigned int i=1; i<matchedGroupsLength; i++)
         {
             NSRange curRange = [firstMatch rangeAtIndex:i];
             if (curRange.location != NSNotFound && curRange.location < numberStr.length)
