@@ -49,7 +49,7 @@ NSString * const FIRST_GROUP_PATTERN = @"(\\$\\d)";
 NSString * const FIRST_GROUP_ONLY_PREFIX_PATTERN = @"^\\(?\\$1\\)?";
 NSString * const NP_PATTERN = @"\\$NP";
 NSString * const FG_PATTERN = @"\\$FG";
-NSString * const VALID_ALPHA_PHONE_PATTERN_STRING = @"(?:.*?[A-Za-z]){3}.*";
+NSString * const VALID_ALPHA_PHONE_PATTERN_STRING = @"^(?:.*?[A-Za-z]){3}.*$";
 NSString * const UNIQUE_INTERNATIONAL_PREFIX = @"[\\d]+(?:[~\\u2053\\u223C\\uFF5E][\\d]+)?";
 
 NSString * const NON_BREAKING_SPACE = @"\u00a0";
@@ -81,6 +81,7 @@ static NSDictionary *DIGIT_MAPPINGS;
 #pragma mark - NBPhoneNumberUtil interface -
 @interface NBPhoneNumberUtil () {
     NSMutableDictionary *regexPatternCache;
+    NSMutableDictionary *fullRegexCache;
     NSLock *lockPatternCache;
 }
 
@@ -178,13 +179,15 @@ static NSDictionary *DIGIT_MAPPINGS;
 #pragma mark - Regular expression Utilities -
 - (BOOL)hasValue:(NSString*)string
 {
-    string = [NBPhoneNumberUtil normalizeNonBreakingSpace:string];
-    
-    if (string == nil || [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length <= 0) {
-        return NO;
+    NSCharacterSet * whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSUInteger length = [string length];
+    for (NSUInteger i=0; i<length; i++) {
+        unichar ch = [string characterAtIndex:i];
+        if ((ch != 0xa0 && ![whitespace characterIsMember:ch])) {
+            return YES;
+        }
     }
-    
-    return YES;
+    return NO;
 }
 
 
@@ -4065,7 +4068,15 @@ static NSDictionary *DIGIT_MAPPINGS;
 - (BOOL)matchesEntirely:(NSString*)regex string:(NSString*)str
 {
     if ([regex rangeOfString:@"^"].location == NSNotFound) {
-        regex = [NSString stringWithFormat:@"^(?:%@)$", regex];
+        if (!fullRegexCache) {
+            fullRegexCache = [NSMutableDictionary new];
+        }
+        NSString *fullRegex = fullRegexCache[regex];
+        if (!fullRegex) {
+            fullRegex = [NSString stringWithFormat:@"^(?:%@)$", regex];
+            fullRegexCache[regex] = fullRegex;
+        }
+        regex = fullRegex;
     }
     
     NSError *error = nil;
